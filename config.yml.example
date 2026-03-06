@@ -1,0 +1,116 @@
+email:
+  smtp_server: smtp.gmail.com
+  smtp_port: 587
+  imap_server: imap.gmail.com
+  imap_port: 993
+  username: XYZ@gmail.com
+  password: insert app password  # Use app password for Gmail
+  sender: XYZ@gmail.com
+  recipient: your_email@gmail.com
+
+xai_api_key: your_xai_api_key  # Get from https://x.ai/api
+
+schedule:
+  days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+  time: "07:00"  # HH:MM format
+
+routine:
+  duration_minutes: 40
+  exercises:
+    # Push day exercises
+    - name: "Handstand Push-ups"
+      muscle_group: "push"
+      sets: 3
+      reps: 5
+      weight: 0  # Bodyweight
+      rest_seconds: 60
+      complementary: false
+    - name: "Bench Press"
+      muscle_group: "push"
+      sets: 3
+      reps: 8
+      weight: 80
+      rest_seconds: 90
+      complementary: false
+    - name: "Overhead Press"
+      muscle_group: "push"
+      sets: 3
+      reps: 8
+      weight: 50
+      rest_seconds: 90
+      complementary: false
+    # Pull day exercises
+    - name: "Pull-ups"
+      muscle_group: "pull"
+      sets: 3
+      reps: 8
+      weight: 0
+      rest_seconds: 60
+      complementary: false
+    - name: "Bent-over Rows"
+      muscle_group: "pull"
+      sets: 3
+      reps: 8
+      weight: 60
+      rest_seconds: 90
+      complementary: false
+    # Legs day exercises
+    - name: "Deadlifts"
+      muscle_group: "legs"
+      sets: 3
+      reps: 5
+      weight: 100
+      rest_seconds: 120
+      complementary: false
+    - name: "Squats"
+      muscle_group: "legs"
+      sets: 3
+      reps: 8
+      weight: 70
+      rest_seconds: 90
+      complementary: false
+    # Explosive moves
+    - name: "Dumbbell Squat to Overhead Press"
+      muscle_group: "explosive"
+      sets: 3
+      reps: 6
+      weight: 40
+      rest_seconds: 60
+      complementary: false
+    - name: "Deadlift to Row to Squat Overhead Press"
+      muscle_group: "explosive"
+      sets: 3
+      reps: 4
+      weight: 50
+      rest_seconds: 90
+      complementary: false
+    # Cardio
+    - name: "Jump Rope"
+      muscle_group: "cardio"
+      sets: 1
+      reps: 300  # seconds or jumps
+      weight: 0
+      rest_seconds: 30
+      complementary: true
+    - name: "Burpees"
+      muscle_group: "cardio"
+      sets: 3
+      reps: 10
+      weight: 0
+      rest_seconds: 45
+      complementary: true
+    # Complementary exercises
+    - name: "Plank"
+      muscle_group: "core"
+      sets: 3
+      reps: 30  # seconds
+      weight: 0
+      rest_seconds: 30
+      complementary: true
+    - name: "Push-up to Row"
+      muscle_group: "push_pull"
+      sets: 3
+      reps: 8
+      weight: 0
+      rest_seconds: 60
+      complementary: true

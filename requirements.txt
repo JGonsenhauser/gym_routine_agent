@@ -1,0 +1,5 @@
+schedule
+pyyaml
+pytest
+requests
+python-dotenv
