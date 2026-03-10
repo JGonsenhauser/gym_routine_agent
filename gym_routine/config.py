@@ -13,4 +13,5 @@ def load_config(config_path=None):
     if 'xai' not in config or config['xai'] is None:
         config['xai'] = {}
     config['xai']['api_key'] = os.getenv('XAI_API_KEY', config['xai'].get('api_key', ''))
+    config['resend_api_key'] = os.getenv('RESEND_API_KEY', '')
     return config

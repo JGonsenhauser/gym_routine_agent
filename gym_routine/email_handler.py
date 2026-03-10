@@ -1,8 +1,6 @@
-import smtplib
 import imaplib
 import email
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+import requests
 from .config import load_config
 from .state import update_last_email_uid, get_last_email_uid
 from .parser import parse_adjustments
@@ -12,11 +10,9 @@ import logging
 logging.basicConfig(level=logging.INFO)
 
 def send_workout_email(workout):
-    config = load_config()['email']
-    msg = MIMEMultipart()
-    msg['From'] = config['sender']
-    msg['To'] = config['recipient']
-    msg['Subject'] = f"Gym Routine for Day {workout['day'] + 1}"
+    config = load_config()
+    email_config = config['email']
+    api_key = config['resend_api_key']
 
     body = "Good Morning Jonathan - GET READY FOR YOUR WORKOUT ! don't slack get this routine in!!!\n\n"
     body += f"Today's workout (approx {workout['total_time_estimate_minutes']} min):\n\n"
@@ -25,15 +21,24 @@ def send_workout_email(workout):
         body += f"- {ex['name']}: {ex['sets']} sets x {ex['reps']} reps @ {ex['weight']} lbs, rest {ex['rest_seconds']}s{equipment_str}\n\n"
     body += "\nReply to this email with adjustments, e.g. 'Increase bench to 90 lbs' or 'Did 10 reps on pull-ups'."
 
-    msg.attach(MIMEText(body, 'plain'))
-
     try:
-        server = smtplib.SMTP(config['smtp_server'], config['smtp_port'])
-        server.starttls()
-        server.login(config['username'], config['password'])
-        server.sendmail(config['sender'], config['recipient'], msg.as_string())
-        server.quit()
-        logging.info("Workout email sent.")
+        response = requests.post(
+            "https://api.resend.com/emails",
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json"
+            },
+            json={
+                "from": email_config['sender'],
+                "to": [email_config['recipient']],
+                "subject": f"Gym Routine for Day {workout['day'] + 1}",
+                "text": body
+            }
+        )
+        if response.status_code == 200 or response.status_code == 201:
+            logging.info("Workout email sent.")
+        else:
+            logging.error(f"Resend API error: {response.status_code} {response.text}")
     except Exception as e:
         logging.error(f"Failed to send email: {e}")
 
@@ -56,7 +61,7 @@ def check_for_replies():
                 if status == 'OK':
                     raw_email = data[0][1]
                     msg = email.message_from_bytes(raw_email)
-                    if msg['From'] == config['recipient']:  # Assuming replies from self
+                    if msg['From'] == config['recipient']:
                         body = get_email_body(msg)
                         adjustments = parse_adjustments(body)
                         for adj in adjustments:
