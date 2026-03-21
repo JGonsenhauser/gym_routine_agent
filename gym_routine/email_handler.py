@@ -7,7 +7,8 @@ from .parser import parse_adjustments
 from .state import update_exercise_weight
 import logging
 
-logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 
 def send_workout_email(workout):
     config = load_config()
@@ -35,12 +36,14 @@ def send_workout_email(workout):
                 "text": body
             }
         )
-        if response.status_code == 200 or response.status_code == 201:
-            logging.info("Workout email sent.")
+        if response.status_code in (200, 201):
+            result = response.json()
+            logger.info(f"Workout email sent. Resend ID: {result.get('id', 'unknown')}")
         else:
-            logging.error(f"Resend API error: {response.status_code} {response.text}")
+            logger.error(f"Resend API error: {response.status_code} {response.text}")
     except Exception as e:
-        logging.error(f"Failed to send email: {e}")
+        logger.error(f"Failed to send email: {e}")
+
 
 def check_for_replies():
     config = load_config()['email']
@@ -69,7 +72,8 @@ def check_for_replies():
                         update_last_email_uid(num.decode())
         mail.logout()
     except Exception as e:
-        logging.error(f"Failed to check emails: {e}")
+        logger.error(f"Failed to check emails: {e}")
+
 
 def get_email_body(msg):
     if msg.is_multipart():

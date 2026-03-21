@@ -1,0 +1,27 @@
+# Systemd service for Gym Routine Email Agent
+# Install: sudo cp gym-routine.service /etc/systemd/system/
+#          sudo systemctl daemon-reload
+#          sudo systemctl enable gym-routine
+#          sudo systemctl start gym-routine
+# Logs:    sudo journalctl -u gym-routine -f
+#          Also writes to logs/gym_agent.log in the project directory
+
+[Unit]
+Description=Gym Routine Email Agent
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/root/gym_routine
+ExecStart=/usr/bin/python3 main.py
+Restart=always
+RestartSec=30
+EnvironmentFile=/root/gym_routine/.env
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
